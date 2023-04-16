@@ -13,17 +13,8 @@ class MenuController extends Controller
      */
     public function index()
     {
-        return response()->json('Test');
-       /*  return Menu::all(); */
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-
+       
+        return Menu::all();
     }
 
     /**
@@ -32,6 +23,7 @@ class MenuController extends Controller
     public function store(StoreMenuRequest $request)
     {
         //
+
     }
 
     /**

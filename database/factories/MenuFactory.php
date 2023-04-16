@@ -18,6 +18,7 @@ class MenuFactory extends Factory
     {
         return [
             'menu_item' => $this->faker->name,
+            'type' => $this->faker->randomElement(['drink', 'food']),
             'price' => $this->faker-> randomFloat(1, 10, 20),
         ];
     }
