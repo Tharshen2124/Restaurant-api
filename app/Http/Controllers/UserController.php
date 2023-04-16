@@ -7,21 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-
     /**
      * Store a newly created resource in storage.
      */
@@ -64,40 +53,18 @@ class UserController extends Controller
         // Why cant i use this for the if else part
         if(Auth::check()) {
             return ([
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'token' => $token,
+                'message' => 'Success!',
+                'data' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'token' => $token,
+                ]                
             ]);
         } else {
             return response()->json("hhhmm....., we can't seem to log you in");
         }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function login(Request $request)
-    {
-        $attributes = $request->validate([
-            'email' => 'required|email:rfc,dns|unique:App\Models\User,email',
-            'password' => [
-                'required',
-                Password::min(8)
-                     ->numbers()
-                     ->symbols()
-                     ->letters()
-            ],
-        ]);
-
-       /*  if(Auth::attempt($attributes)) {
-            session()->regenerate();
-            return ([
-                'name' => $user->name,
-                'token' => $token,
-            ]);
-        }  */
-    }
+    }Z
 
     /**
      * Show the form for editing the specified resource.
