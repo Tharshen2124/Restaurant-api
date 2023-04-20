@@ -11,9 +11,9 @@ use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
-    /**
-     * Store a newly created resource in storage.
-     */
+    
+    // Registers a new user
+     
     public function register(Request $request)
     {
         $attributes = $request->validate([
@@ -37,7 +37,6 @@ class UserController extends Controller
             'password' => $userPassword,
             
         ]);
-
         /**
          * Auth::check() 
          * * does work because returns bool
@@ -47,10 +46,7 @@ class UserController extends Controller
          * ^ does not work but i know why (does not return bool)
          
         */
-       
-        $token = $user->createToken('API Token of ' . $user->name)->plainTextToken;
         Auth::login($user);
-        // Why cant i use this for the if else part
         if(Auth::check()) {
             return ([
                 'message' => 'Success!',
@@ -58,20 +54,44 @@ class UserController extends Controller
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
-                    'token' => $token,
+                    'token' => $user->createToken('API Token of ' . $user->name)->plainTextToken
                 ]                
             ]);
         } else {
             return response()->json("hhhmm....., we can't seem to log you in");
         }
-    }Z
+    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+    
+    // logs the user who has previously registered
+     
+    public function login(Request $request)
+    {   
+        $attributes = $request->validate([
+            'email' => 'required|email:rfc,dns',
+            'password' => 'required',
+            
+        ]);
+
+        if(Auth::attempt($attributes)) {
+            session()->regenerate();
+
+            $user = User::where('email', $attributes['email'])->first();
+           
+            return ([
+                'message' => 'Success!',
+                'data' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'token' => $user->createToken('API Token of ' . $user->name)->plainTextToken
+                ]                
+            ]);
+        } else {
+            return ([
+                'message' => "hhhmm...it seems we can't find your credentials. Are you sure you have registered already?"
+            ]);
+        }
     }
 
     /**
@@ -82,11 +102,22 @@ class UserController extends Controller
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    // logs out the user
+
+    public function logout(string $id)
     {
-        //
+        Auth::logout();
+
+        return ([
+            'message' => 'Goodbye!'
+        ]);
+    }
+
+    public function deleteUser(User $user) {
+        $user->delete();
+
+        return ([
+            'message' => 'Account successfully deleted'
+        ]);
     }
 }
