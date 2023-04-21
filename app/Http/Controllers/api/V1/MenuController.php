@@ -1,29 +1,31 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\api\V1;
 
-use App\Http\Requests\StoreMenuRequest;
-use App\Http\Requests\UpdateMenuRequest;
 use App\Models\Menu;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+/* use App\Http\Resources\MenuResource; */
+use App\Http\Resources\V1\MenuResource;
+use App\Http\Resources\V1\MenuCollection;
 
 class MenuController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Menu $menu)
     {
-       
-        return Menu::all();
+        //
+        return new MenuCollection(Menu::paginate());
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreMenuRequest $request)
+    public function store(Request $request)
     {
         //
-
     }
 
     /**
@@ -31,21 +33,13 @@ class MenuController extends Controller
      */
     public function show(Menu $menu)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Menu $menu)
-    {
-        //
+        return new MenuResource($menu);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateMenuRequest $request, Menu $menu)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -53,7 +47,7 @@ class MenuController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Menu $menu)
+    public function destroy(string $id)
     {
         //
     }
