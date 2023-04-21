@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\V1\UserResource;
 use Illuminate\Validation\Rules\Password;
+use App\Http\Requests\V1\StoreUserRequest;
 use Illuminate\Validation\ValidationException;
 
 
@@ -16,52 +18,11 @@ class UserController extends Controller
     
     // Registers a new user
      
-    public function register(Request $request)
+    public function register(StoreUserRequest $request)
     {
-        $attributes = $request->validate([
-            'name' => 'required|max:255|min:3',
-            'email' => 'required|email:rfc,dns|unique:App\Models\User,email',
-            'password' => [
-                'required',
-                Password::min(8)
-                     ->numbers()
-                     ->symbols()
-                     ->letters()
-            ],
-            /* 'confirm_password' => 'same:password', */
-        ]);
-
-        $userPassword = Hash::make($attributes['password']);
-
-        $user = User::create([
-            'name' => $attributes['name'],
-            'email' => $attributes['email'],
-            'password' => $userPassword,
-            
-        ]);
-        /**
-         * Auth::check() 
-         * * does work because returns bool
-         * Auth::attempt($attributes)
-         * * does work
-         * Auth::login($user)
-         * ^ does not work but i know why (does not return bool)
-         
-        */
-        Auth::login($user);
-        if(Auth::check()) {
-            return ([
-                'message' => 'Success!',
-                'data' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'token' => $user->createToken('API Token of ' . $user->name)->plainTextToken
-                ]                
-            ]);
-        } else {
-            return response()->json("hhhmm....., we can't seem to log you in");
-        }
+        return new UserResource(User::create($request->all()));
+        
+        
     }
 
     
