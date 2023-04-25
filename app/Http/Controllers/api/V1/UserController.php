@@ -5,12 +5,14 @@ namespace App\Http\Controllers\api\V1;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\V1\LoginUserRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\V1\UserResource;
 use Illuminate\Validation\Rules\Password;
 use App\Http\Requests\V1\StoreUserRequest;
 use Illuminate\Validation\ValidationException;
+use App\Traits\HttpResponses;
 
 
 class UserController extends Controller
@@ -21,40 +23,29 @@ class UserController extends Controller
     public function register(StoreUserRequest $request)
     {
         return new UserResource(User::create($request->all()));
-        
-        
     }
 
     
     // logs the user who has previously registered
      
-    public function login(Request $request)
+    public function login(LoginUserRequest $request)
     {   
-        $attributes = $request->validate([
-            'email' => 'required|email:rfc,dns',
-            'password' => 'required',
-            
-        ]);
+        $request->validated($request->all());
 
-        if(Auth::attempt($attributes)) {
-            session()->regenerate();
+        if(!Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            return response()->json([
+                'status' => 'Error has occured...',
+                'message' => 'Credentials do not match',
+                'data' => null
+            ], 401);
+        } 
 
-            $user = User::where('email', $attributes['email'])->first();
-           
-            return ([
-                'message' => 'Success!',
-                'data' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'token' => $user->createToken('API Token of ' . $user->name)->plainTextToken
-                ]                
-            ]);
-        } else {
-            return ([
-                'message' => "hhhmm...it seems we can't find your credentials. Are you sure you have registered already?"
-            ]);
-        }
+        $user = User::where('email', $request->email)->first();
+
+        return [
+            'user' => new UserResource($user),
+            'token' => $user->createToken('Api Token of ' . $user->name)->plainTextToken
+        ];
     }
 
     /**
