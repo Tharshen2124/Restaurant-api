@@ -54,6 +54,7 @@ class UserController extends Controller
     public function update(Request $request, string $id)
     {
         //
+       
     }
 
     // logs out the user
