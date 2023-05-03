@@ -40,20 +40,29 @@ class MenuController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateMenuRequest $request, Menu $menu)
+    public function update(UpdateMenuRequest $request, string $id)
     {
-        DB::table('menus')->where('id', $menu->id)->update([
-            'menu_item' => $request->menu_item,
-            'type' => $request->type,
-            'price' => $request->price
-        ]);
-    }
+        $menu = Menu::find($id);
 
+        $menu->update($request->all());
+    }
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Menu $menu)
     {
-        //
+        $id = $menu->id;
+
+        $menu->delete();
+
+        if(Menu::find($id) === null) {
+            return [
+                "message" => "menu item has been deleted"
+            ];
+        } else {
+            return [
+                "message" => "looks like the item is still here"            
+            ];
+        }
     }
 }

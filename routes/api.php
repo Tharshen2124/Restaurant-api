@@ -21,8 +21,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// this group prefix allows us to add a v1 endpoint to the url
+// this is how it will look like
+// https://name.com/api/v1/......
+
 Route::group(['prefix' => 'v1'], function() {
-    Route::apiResource('/menu', MenuController::class);
+    Route::apiResource('menu', MenuController::class);
     Route::post('/register', [UserController::class, 'register']);
     Route::post('/login', [UserController::class, 'login']);
 });

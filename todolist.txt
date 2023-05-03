@@ -1,0 +1,8 @@
+Things to ask or others
+1. Why is it when using a put request, if i use the raw method in postman to update the data
+   for my menu item it works but if i use form-data, it doesnt
+
+
+Todo list 
+
+   
