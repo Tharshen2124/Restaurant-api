@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\api\V1;
 
 use App\Models\Menu;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\MenuResource;
 use App\Http\Resources\V1\MenuCollection;

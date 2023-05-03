@@ -7,12 +7,10 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\LoginUserRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\V1\UserResource;
-use Illuminate\Validation\Rules\Password;
 use App\Http\Requests\V1\StoreUserRequest;
-use Illuminate\Validation\ValidationException;
-use App\Traits\HttpResponses;
+
+/* use App\Traits\HttpResponses; */
 
 
 class UserController extends Controller
