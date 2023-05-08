@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\api\V1;
 
-use App\Http\Requests\StoreOrderitemRequest;
-use App\Http\Requests\UpdateOrderitemRequest;
-use App\Http\Controllers\Controller;
+use App\Models\Menu;
+use App\Models\Order;
 use App\Models\Orderitem;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use App\Http\Requests\V1\StoreOrderitemRequest;
+use App\Http\Requests\V1\UpdateOrderitemRequest;
 
 class OrderitemController extends Controller
 {
@@ -20,9 +24,34 @@ class OrderitemController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreOrderitemRequest $request)
+    public function store(StoreOrderitemRequest $request, Menu $menu)
     {
-        //
+        $numOfItems = Cache::get('numOfItems');
+        
+        $attributes = $request->validate([
+            'quantity' => 'integer|min:1',
+        ]);
+        
+        // /https://laravel.com/docs/10.x/eloquent#retrieving-or-creating-models
+        // use firstorcreate to create order if (status = pending & order with user id doesnt exist)
+        $order = Order::firstorcreate(
+            [
+                "status" => "pending",
+                "user_id" => Auth::id(), //same as Auth::user()->id
+            ],
+            [ "payment" => 0 ]
+        );
+        
+        $orderId = $order->id;
+
+        $numOfItems += $attributes['quantity'];
+        Cache::put('numOfItems', $numOfItems);
+
+        $orderitem = new Orderitem;
+        $orderitem->order_id = $order->id;
+        $orderitem->menu_id = $menu->id;
+        $orderitem->quantity = $attributes['quantity'];
+        $orderitem->save();
     }
 
     /**

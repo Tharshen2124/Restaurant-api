@@ -2,16 +2,20 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Menu;
+use App\Models\Order;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Orderitem extends Model
 {
     use HasFactory;
+    
+    public function order() {
+        return $this->belongsTo(Order::class, 'order_id');
+    }
 
-    protected $fillable = [
-        'menu_item',
-        'type',
-        'price',
-    ];
+    public function menu() {
+        return $this->belongsTo(Menu::class, 'menu_id');
+    }
 }

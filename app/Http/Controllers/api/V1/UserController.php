@@ -15,18 +15,16 @@ use App\Http\Requests\V1\StoreUserRequest;
 
 class UserController extends Controller
 {
-    
+
     // Registers a new user
-     
-    public function register(StoreUserRequest $request)
+    public function register(StoreUserRequest $request): UserResource
     {
         return new UserResource(User::create($request->all()));
     }
 
     
     // logs the user who has previously registered
-     
-    public function login(LoginUserRequest $request)
+    public function login(LoginUserRequest $request): array 
     {   
         $request->validated($request->all());
 
@@ -46,19 +44,14 @@ class UserController extends Controller
         ];
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    // Update the specified resource in storage.
     public function update(Request $request, string $id)
     {
-        //
-       
+    
     }
 
     // logs out the user
-
-    public function logout(string $id)
-    {
+    public function logout(string $id): array {
         Auth::logout();
 
         return ([
@@ -66,7 +59,8 @@ class UserController extends Controller
         ]);
     }
 
-    public function deleteUser(User $user) {
+    // delete the user's records and data
+    public function deleteUser(User $user): array {
         $user->delete();
 
         return ([
