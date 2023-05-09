@@ -13,3 +13,6 @@ use App\Http\Controllers\MenuController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+
+Route::get('/articles', [ArticleControlle::class, 'method'])->middleware('auth');

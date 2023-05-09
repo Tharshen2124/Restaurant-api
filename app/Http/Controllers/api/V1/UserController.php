@@ -19,13 +19,23 @@ class UserController extends Controller
     // Registers a new user
     public function register(StoreUserRequest $request): UserResource
     {
-        return new UserResource(User::create($request->all()));
+        // return new UserResource(User::create($request->all()));
+
+        // creates a new user and stores it into the database
+        $user = User::create($request->all());
+
+        // logs the user into the session
+        Auth::login($user);
+
+        // checks if the user is authenticated or not
+        return Auth::check() ?  new UserResource($user) : ['message' => 'Hhhmm we cant seem to log you in'];
     }
 
     
     // logs the user who has previously registered
     public function login(LoginUserRequest $request): array 
     {   
+        //
         $request->validated($request->all());
 
         if(!Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
