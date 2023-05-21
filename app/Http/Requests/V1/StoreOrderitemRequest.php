@@ -22,7 +22,7 @@ class StoreOrderitemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'quantity' => 'integer|min:1',
         ];
     }
 }
