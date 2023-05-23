@@ -40,7 +40,16 @@ class OrderitemController extends Controller
         $orderitem->quantity = $request->quantity;
         $isAdded = $orderitem->save();
 
-        return $isAdded ? ['message' => 'Item added to cart'] : ['message' => 'an error occured'];
+        if ($isAdded){
+            return [
+                'message' => 'Item added to cart',
+                'orderitem' => Orderitem::where('user_id', auth()->id)->get()
+            ];
+        } else {
+            return  [
+                'message' => 'an error occured'
+            ];
+        }
     }
 
     // Display the specified resource.

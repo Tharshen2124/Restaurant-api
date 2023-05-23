@@ -17,7 +17,7 @@ class UserController extends Controller
 {
 
     // Registers a new user
-    public function register(StoreUserRequest $request): UserResource
+    public function register(StoreUserRequest $request)
     {
         // return new UserResource(User::create($request->all()));
 
@@ -28,17 +28,24 @@ class UserController extends Controller
         Auth::login($user);
 
         // checks if the user is authenticated or not
-        return Auth::check() ?  new UserResource($user) : ['message' => 'Hhhmm we cant seem to log you in'];
+        if(Auth::check()) {
+            return [
+                'user' => new UserResource($user),
+                'token' => $user->createToken('Api Token of ' . $user->name)->plainTextToken
+            ];    
+        } else {
+            return ['message' => 'Hhhmm we cant seem to log you in'];
+        } 
     }
 
     
     // logs the user who has previously registered
-    public function login(LoginUserRequest $request): array 
+    public function login(LoginUserRequest $request)
     {   
-        //
-        $request->validated($request->all());
 
-        if(!Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+        $user = $request->validate($request->all());
+        
+        if(!Auth::attempt($user)) {
             return response()->json([
                 'status' => 'Error has occured...',
                 'message' => 'Credentials do not match',
