@@ -18,7 +18,7 @@ class OrderitemController extends Controller
      */
     public function index()
     {
-        //
+        
     }
 
     /**
@@ -26,32 +26,7 @@ class OrderitemController extends Controller
      */
     public function store(StoreOrderitemRequest $request, Menu $menu)
     {
-        $numOfItems = Cache::get('numOfItems');
         
-        $attributes = $request->validate([
-            'quantity' => 'integer|min:1',
-        ]);
-        
-        // /https://laravel.com/docs/10.x/eloquent#retrieving-or-creating-models
-        // use firstorcreate to create order if (status = pending & order with user id doesnt exist)
-        $order = Order::firstorcreate(
-            [
-                "status" => "pending",
-                "user_id" => Auth::id(), //same as Auth::user()->id
-            ],
-            [ "payment" => 0 ]
-        );
-        
-        $orderId = $order->id;
-
-        $numOfItems += $attributes['quantity'];
-        Cache::put('numOfItems', $numOfItems);
-
-        $orderitem = new Orderitem;
-        $orderitem->order_id = $order->id;
-        $orderitem->menu_id = $menu->id;
-        $orderitem->quantity = $attributes['quantity'];
-        $orderitem->save();
     }
 
     /**
@@ -59,7 +34,7 @@ class OrderitemController extends Controller
      */
     public function show(Orderitem $orderitem)
     {
-        //
+        
     }
 
     /**
@@ -67,7 +42,7 @@ class OrderitemController extends Controller
      */
     public function update(UpdateOrderitemRequest $request, Orderitem $orderitem)
     {
-        //
+        
     }
 
     /**
@@ -75,6 +50,6 @@ class OrderitemController extends Controller
      */
     public function destroy(Orderitem $orderitem)
     {
-        //
+        
     }
 }

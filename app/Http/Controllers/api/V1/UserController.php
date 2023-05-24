@@ -5,10 +5,12 @@ namespace App\Http\Controllers\api\V1;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\V1\LoginUserRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\V1\UserResource;
+use App\Http\Requests\V1\LoginUserRequest;
 use App\Http\Requests\V1\StoreUserRequest;
+use Illuminate\Validation\ValidationException;
 
 /* use App\Traits\HttpResponses; */
 
@@ -17,41 +19,41 @@ class UserController extends Controller
 {
 
     // Registers a new user
-    public function register(StoreUserRequest $request): UserResource
+    public function register(StoreUserRequest $request)
     {
-        // return new UserResource(User::create($request->all()));
+        
 
-        // creates a new user and stores it into the database
-        $user = User::create($request->all());
+        $user = User::create($request->validated($request->all()));
 
-        // logs the user into the session
         Auth::login($user);
 
-        // checks if the user is authenticated or not
-        return Auth::check() ?  new UserResource($user) : ['message' => 'Hhhmm we cant seem to log you in'];
+        if(Auth::check($user)) {
+            return ['message' => 'worked'];
+        } else {
+            return ['message' => 'wtf'];
+        }
     }
 
     
     // logs the user who has previously registered
-    public function login(LoginUserRequest $request): array 
+    public function login(Request $request)
     {   
-        //
-        $request->validated($request->all());
+        $attributes = $request->validate([
+            'email' => 'required|email:rfc,dns',
+            'password' => 'required',
+            
+        ]);
 
-        if(!Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            return response()->json([
-                'status' => 'Error has occured...',
-                'message' => 'Credentials do not match',
-                'data' => null
-            ], 401);
-        } 
-
-        $user = User::where('email', $request->email)->first();
-
-        return [
-            'user' => new UserResource($user),
-            'token' => $user->createToken('Api Token of ' . $user->name)->plainTextToken
-        ];
+        if(Auth::attempt($attributes)) {
+            return [
+                'message' => 'this should work',
+            ]; 
+        } else {
+            return [
+                'message' => 'failed you fuck'
+            ];
+        }
+       
     }
 
     // Update the specified resource in storage.
@@ -61,20 +63,12 @@ class UserController extends Controller
     }
 
     // logs out the user
-    public function logout(string $id): array {
-        Auth::logout();
-
-        return ([
-            'message' => 'Goodbye!'
-        ]);
+    public function logout(string $id)/* : array */ {
+    
     }
 
     // delete the user's records and data
-    public function deleteUser(User $user): array {
-        $user->delete();
+    public function deleteUser(User $user)/* : array */ {
 
-        return ([
-            'message' => 'Account successfully deleted'
-        ]);
     }
 }

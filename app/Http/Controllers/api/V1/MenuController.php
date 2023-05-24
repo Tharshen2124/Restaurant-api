@@ -12,27 +12,32 @@ use App\Http\Requests\V1\UpdateMenuRequest;
 class MenuController extends Controller
 {
     //Display a listing of the resource.
-    public function index() {
+    public function index() 
+    {
         return new MenuCollection(Menu::paginate());
     }
 
     //Store a newly created resource in storage.
-    public function store(StoreMenuRequest $request) {
+    public function store(StoreMenuRequest $request) 
+    {
         return new MenuResource(Menu::create($request->all()));
     }
 
     //Display the specified resource.
-    public function show(Menu $menu){
+    public function show(Menu $menu)
+    {
         return new MenuResource($menu);
     }
     
     //Update the specified resource in storage.
-    public function update(UpdateMenuRequest $request, Menu $menu) {
+    public function update(UpdateMenuRequest $request, Menu $menu) 
+    {
         $menu->update($request->all());
     }
     
     //Remove the specified resource from storage.
-    public function destroy(Menu $menu) {
+    public function destroy(Menu $menu) 
+    {
         $id = $menu->id;
         $menu->delete();
 
