@@ -24,9 +24,29 @@ class OrderitemController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreOrderitemRequest $request, Menu $menu)
+    public function store(StoreOrderitemRequest $request, string $id)
     {
+        $menu = Menu::find($id);
+        $request->validate($request->all());
+        // /https://laravel.com/docs/10.x/eloquent#retrieving-or-creating-models
+        // use firstorcreate to create order if (status = pending & order with user id doesnt exist)
+        $order = Order::firstorcreate(
+            [
+                "status" => "pending",
+                "user_id" => Auth::id(), //same as Auth::user()->id
+            ],
+            [ "payment" => 0 ]
+        );
+        $orderitem = new Orderitem;
+        $orderitem->order_id = $order->id;
+        $orderitem->menu_id = $menu->id;
+        $orderitem->quantity = $request->quantity;
+        $orderitem->save();
         
+        return [
+            'message' => 'Success!',
+            'orderitem' => $orderitem
+        ];
     }
 
     /**

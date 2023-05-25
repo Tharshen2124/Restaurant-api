@@ -32,28 +32,45 @@ class UserController extends Controller
         Auth::login($user);
 
         if(Auth::check($user)) {
-            return ['message' => 'worked'];
+            $token = $request->user()->createToken('userToken')->plainTextToken;
+            return [
+                'message' => 'Success!',
+                'status' => 201,
+                'user' => new UserResource($user),
+                'token' => $token
+            ];
         } else {
-            return ['message' => 'wtf'];
+            return [
+                'message' => 'Error',
+                'status' => 'fuck you',
+                'user' => null,
+                'token' => null
+            ];
         }
     }
 
-    
     // logs the user who has previously registered
     public function login(LoginUserRequest $request)
     {   
         $request->validated($request->all());
-
+    
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            $token = $request->user()->createToken('userToken')->plainTextToken;
             return [
-                'message' => 'this should work',
+                'message' => 'Success!',
+                'status' => 200,
+                'user' => User::where('email', $request->email)->get(),
+                'token' => $token,
+                
             ]; 
         } else {
             return [
-                'message' => 'failed you fuck'
+                'message' => 'Error',
+                'status' => 'Fuck you',
+                'user' => null,
+                'token' => null
             ];
         }
-       
     }
 
     // Update the specified resource in storage.

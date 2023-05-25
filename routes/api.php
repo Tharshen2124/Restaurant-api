@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\V1\MenuController;
+use App\Http\Controllers\api\V1\OrderitemController;
 use App\Http\Controllers\api\V1\UserController;
 
 
@@ -27,6 +28,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::group(['prefix' => 'v1'], function() {
     Route::apiResource('menu', MenuController::class);
+    Route::post('orderitem/{id}', [OrderitemController::class, 'store']);
     Route::post('register', [UserController::class, 'register']);
     Route::post('login', [UserController::class, 'login']);
 });
