@@ -21,9 +21,13 @@ class UserController extends Controller
     // Registers a new user
     public function register(StoreUserRequest $request)
     {
-        
+        $request->validated($request->all());
 
-        $user = User::create($request->validated($request->all()));
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
 
         Auth::login($user);
 
@@ -36,15 +40,11 @@ class UserController extends Controller
 
     
     // logs the user who has previously registered
-    public function login(Request $request)
+    public function login(LoginUserRequest $request)
     {   
-        $attributes = $request->validate([
-            'email' => 'required|email:rfc,dns',
-            'password' => 'required',
-            
-        ]);
+        $request->validated($request->all());
 
-        if(Auth::attempt($attributes)) {
+        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             return [
                 'message' => 'this should work',
             ]; 
