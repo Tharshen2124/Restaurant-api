@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\V1\MenuController;
 use App\Http\Controllers\api\V1\OrderitemController;
 use App\Http\Controllers\api\V1\UserController;
-
+use App\Models\Orderitem;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,12 +25,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // this group prefix allows us to add a v1 endpoint to the url
 // this is how it will look like
 // https://name.com/api/v1/......
-
 Route::group(['prefix' => 'v1'], function() {
-    Route::apiResource('menu', MenuController::class);
-    Route::post('orderitem/{id}', [OrderitemController::class, 'store']);
+
     Route::post('register', [UserController::class, 'register']);
     Route::post('login', [UserController::class, 'login']);
+
+    Route::group(['middleware' => ['auth:sanctum']], function() {
+        Route::apiResource('menu', MenuController::class);
+        Route::post('orderitem/{menu}', [OrderitemController::class, 'store']);
+    });
 });
 
 

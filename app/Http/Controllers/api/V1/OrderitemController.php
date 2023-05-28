@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api\V1;
 
 use App\Models\Menu;
 use App\Models\Order;
+use Illuminate\Http\Request;
 use App\Models\Orderitem;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -24,10 +25,13 @@ class OrderitemController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreOrderitemRequest $request, string $id)
-    {
-        $menu = Menu::find($id);
-        $request->validate($request->all());
+    public function store(Request $request,Menu $menu)
+    {   
+
+        /*  dd($menu->id); */
+        /* $menu = Menu::find($id); */
+        /* $request->validate($request->all()); */
+       
         // /https://laravel.com/docs/10.x/eloquent#retrieving-or-creating-models
         // use firstorcreate to create order if (status = pending & order with user id doesnt exist)
         $order = Order::firstorcreate(
@@ -37,16 +41,22 @@ class OrderitemController extends Controller
             ],
             [ "payment" => 0 ]
         );
+
         $orderitem = new Orderitem;
         $orderitem->order_id = $order->id;
         $orderitem->menu_id = $menu->id;
         $orderitem->quantity = $request->quantity;
-        $orderitem->save();
-        
-        return [
-            'message' => 'Success!',
-            'orderitem' => $orderitem
-        ];
+
+        if($orderitem->save()) {
+            return [
+                'message' => 'Success!',
+                /* 'orderitem' => $orderitem */
+            ];
+        } else {
+            return [
+                'message' => 'fuck'
+            ];
+        }
     }
 
     /**
