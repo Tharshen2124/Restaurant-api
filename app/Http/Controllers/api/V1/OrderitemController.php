@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\V1\StoreOrderitemRequest;
+use App\Http\Requests\V1\StoreOrderRequest;
 use App\Http\Requests\V1\UpdateOrderitemRequest;
 
 class OrderitemController extends Controller
@@ -25,12 +26,9 @@ class OrderitemController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request,Menu $menu)
+    public function store(StoreOrderitemRequest $request,Menu $menu)
     {   
-
-        /*  dd($menu->id); */
-        /* $menu = Menu::find($id); */
-        /* $request->validate($request->all()); */
+        $request->validated($request->all());
        
         // /https://laravel.com/docs/10.x/eloquent#retrieving-or-creating-models
         // use firstorcreate to create order if (status = pending & order with user id doesnt exist)
@@ -50,11 +48,11 @@ class OrderitemController extends Controller
         if($orderitem->save()) {
             return [
                 'message' => 'Success!',
-                /* 'orderitem' => $orderitem */
+                'orderitem' => $orderitem
             ];
         } else {
             return [
-                'message' => 'fuck'
+                'message' => 'fuck',
             ];
         }
     }

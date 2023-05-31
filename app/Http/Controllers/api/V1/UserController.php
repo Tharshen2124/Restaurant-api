@@ -61,7 +61,6 @@ class UserController extends Controller
                 'status' => 200,
                 'user' => User::where('email', $request->email)->get(),
                 'token' => $token,
-                
             ]; 
         } else {
             return [
