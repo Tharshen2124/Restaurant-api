@@ -31,14 +31,16 @@ class UserController extends Controller
 
         Auth::login($user);
 
-        if(Auth::check($user)) {
-            $token = $request->user()->createToken('userToken')->plainTextToken;
-            return [
-                'message' => 'Success!',
+        $token = $request->user()->createToken('userToken')->plainTextToken;
+        $return = [
+            'message' => 'Success!',
                 'status' => 201,
                 'user' => new UserResource($user),
                 'token' => $token
-            ];
+        ];
+
+        if(Auth::check($user)) {
+            return response($return ,201);
         } else {
             return [
                 'message' => 'Error',

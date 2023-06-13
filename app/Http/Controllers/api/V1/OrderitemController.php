@@ -28,33 +28,7 @@ class OrderitemController extends Controller
      */
     public function store(StoreOrderitemRequest $request,Menu $menu)
     {   
-        $request->validated($request->all());
-       
-        // /https://laravel.com/docs/10.x/eloquent#retrieving-or-creating-models
-        // use firstorcreate to create order if (status = pending & order with user id doesnt exist)
-        $order = Order::firstorcreate(
-            [
-                "status" => "pending",
-                "user_id" => Auth::id(), //same as Auth::user()->id
-            ],
-            [ "payment" => 0 ]
-        );
-
-        $orderitem = new Orderitem;
-        $orderitem->order_id = $order->id;
-        $orderitem->menu_id = $menu->id;
-        $orderitem->quantity = $request->quantity;
-
-        if($orderitem->save()) {
-            return [
-                'message' => 'Success!',
-                'orderitem' => $orderitem
-            ];
-        } else {
-            return [
-                'message' => 'fuck',
-            ];
-        }
+        
     }
 
     /**
@@ -68,9 +42,39 @@ class OrderitemController extends Controller
     /**
      * Update the specified resource in storage.
      */
+
+    // (need to make it hidden) name="menuitem_id" value="{{ $menu->id }}" -> this how it will look like in blade
+    
     public function update(UpdateOrderitemRequest $request, Orderitem $orderitem)
-    {
-        
+    {        
+        $request->validated($request->all());
+       
+        // /https://laravel.com/docs/10.x/eloquent#retrieving-or-creating-models
+        // use firstorcreate to create order if (status = pending & order with user id doesnt exist)
+        $order = Order::firstorcreate(
+            [
+                "status" => "pending",
+                "user_id" => Auth::id(), //same as Auth::user()->id
+            ],
+            [ "payment" => 0 ]
+        );
+
+        $orderitem = Orderitem::create([
+            'order_id' => $order->id,
+            'menu_id' => $menu->id,
+            'quantity' => $request->quantity
+        ]);
+
+        if($orderitem->save()) {
+            return [
+                'message' => 'Success!',
+                'orderitem' => $orderitem
+            ];
+        } else {
+            return [
+                'message' => 'Hhhhmm, something went wrong...',
+            ];
+        }
     }
 
     /**

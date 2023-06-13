@@ -10,6 +10,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Orderitem extends Model
 {
     use HasFactory;
+
+    // this might break something so in case, just remove it cause it wasnt needed for the 
+    protected $guarded = [];
     
     public function order() {
         return $this->belongsTo(Order::class, 'order_id');

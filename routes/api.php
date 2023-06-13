@@ -28,12 +28,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // https://name.com/api/v1/......
 Route::group(['prefix' => 'v1'], function() {
 
-    Route::post('register', [UserController::class, 'register']);
-    Route::post('login', [UserController::class, 'login']);
+    Route::post('register', [UserController::class, 'register'])->middleware('guest');
+    Route::post('login', [UserController::class, 'login'])->middleware('guest');
 
     Route::group(['middleware' => ['auth:sanctum']], function() {
-        Route::apiResource('menu', MenuController::class);
-        Route::post('orderitem/{menu}', [OrderitemController::class, 'store']);
+        Route::apiResource('/menu', MenuController::class);
+        /* Route::post('orderitem/{menu}', [OrderitemController::class, 'store']); */
+        Route::apiResource('/addtocart', OrderitemController::class);
         Route::post('/checkout/{orderitem}', [OrderController::class, 'store']);
     });
 });
