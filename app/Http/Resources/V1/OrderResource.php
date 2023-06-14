@@ -3,6 +3,7 @@
 namespace App\Http\Resources\V1;
 
 use Illuminate\Http\Request;
+use App\Http\Resources\V1\OrderitemResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class OrderResource extends JsonResource
@@ -14,6 +15,10 @@ class OrderResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return ([
+            'payment' => $this->payment,
+            'status' => $this->status,
+            'orderitems' => new OrderitemCollection($this->orderitems)
+        ]);
     }
 }

@@ -27,33 +27,34 @@ class OrderitemController extends Controller
     // Store a newly created resource in storage.
     public function store(StoreOrderitemRequest $request,Menu $menu)
     {   
-        $request->validated($request->all());
+        try 
+        {
+            $request->validated($request->all());
         
-        // /https://laravel.com/docs/10.x/eloquent#retrieving-or-creating-models
-        // use firstorcreate to create order if (status = pending & order with user id doesnt exist)
-        $order = Order::firstorcreate(
-            [
-                "status" => "pending",
-                "user_id" => Auth::id(), //same as Auth::user()->id
-            ],
-            [ "payment" => 0 ]
-        );
+            $order = Order::firstorcreate(
+                [
+                    "status" => "pending",
+                    "user_id" => Auth::id(), //same as Auth::user()->id
+                ],
+                [ "payment" => 0 ]
+            );
 
-        $orderitem = Orderitem::create([
-            'order_id' => $order->id,
-            'menu_id' => $request->menu_id,
-            'quantity' => $request->quantity
-        ]);
+            $orderitem = Orderitem::create([
+                'order_id' => $order->id,
+                'menu_id' => $request->menu_id,
+                'quantity' => $request->quantity
+            ]);
 
-        if($orderitem->save()) {
+            $orderitem = Orderitem::where('id',$orderitem->id)
+                            ->with('menu') //eager loading
+                            ->firstorfail();
+
             return [
                 'message' => 'Success!',
                 'orderitem' => new OrderitemResource($orderitem)
             ];
-        } else {
-            return [
-                'message' => 'Hhhhmm, something went wrong...',
-            ];
+        } catch(\Throwable $th) {
+            dd('Something went wrong!', $th->getMessage());
         }
     }
 

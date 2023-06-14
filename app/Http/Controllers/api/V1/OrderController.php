@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\V1\UpdateOrderRequest;
 use App\Http\Requests\V1\StoreOrderRequest as Enter;
+use App\Http\Resources\V1\OrderResource;
 
 class OrderController extends Controller
 {
@@ -23,7 +24,7 @@ class OrderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, Orderitem $orderitem)
+    public function store(Request $request)
     {
         // get the existing order and make it complete
         // eager loading https://laravel.com/docs/10.x/eloquent-relationships#eager-loading
@@ -32,16 +33,18 @@ class OrderController extends Controller
                     ->with('orderitems.menu') //eager loading
                     ->firstorfail();
         $payment = 0;
+
         foreach ($order->orderitems as $orderitem) {
             $payment += ($orderitem->menu->price * $orderitem->quantity);
         }
+
         $order->payment = $payment;
         $order->status = "completed";
         
         if($order->save()) {
             return [
                 'message' => 'Success!',
-                'order' => $order,
+                'order' => new OrderResource($order),
             ];
         } else {
             return [
@@ -66,10 +69,10 @@ class OrderController extends Controller
             $payment += ($orderitem->menu->price * $orderitem->quantity);
         }
 
-        return view('pages.confirm-order-page', [
+        /* return view('pages.confirm-order-page', [
             'orderitems' => $order->orderitems,
             'payment' => $payment
-        ]);
+        ]); */
     }
 
     /**
