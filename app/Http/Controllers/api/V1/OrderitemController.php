@@ -12,43 +12,23 @@ use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\V1\StoreOrderitemRequest;
 use App\Http\Requests\V1\StoreOrderRequest;
 use App\Http\Requests\V1\UpdateOrderitemRequest;
+use App\Http\Resources\V1\OrderitemResource;
 
 class OrderitemController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Display a listing of the resource.
     public function index()
     {
         
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreOrderitemRequest $request,Menu $menu)
-    {   
-        
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Orderitem $orderitem)
-    {
-        
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-
+    
     // (need to make it hidden) name="menuitem_id" value="{{ $menu->id }}" -> this how it will look like in blade
     
-    public function update(UpdateOrderitemRequest $request, Orderitem $orderitem)
-    {        
+    // Store a newly created resource in storage.
+    public function store(StoreOrderitemRequest $request,Menu $menu)
+    {   
         $request->validated($request->all());
-       
+        
         // /https://laravel.com/docs/10.x/eloquent#retrieving-or-creating-models
         // use firstorcreate to create order if (status = pending & order with user id doesnt exist)
         $order = Order::firstorcreate(
@@ -61,14 +41,14 @@ class OrderitemController extends Controller
 
         $orderitem = Orderitem::create([
             'order_id' => $order->id,
-            'menu_id' => $menu->id,
+            'menu_id' => $request->menu_id,
             'quantity' => $request->quantity
         ]);
 
         if($orderitem->save()) {
             return [
                 'message' => 'Success!',
-                'orderitem' => $orderitem
+                'orderitem' => new OrderitemResource($orderitem)
             ];
         } else {
             return [
@@ -77,9 +57,19 @@ class OrderitemController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    //Display the specified resource.
+    public function show(Orderitem $orderitem)
+    {
+        
+    }
+
+    // Update the specified resource in storage.
+    public function update(UpdateOrderitemRequest $request)
+    {        
+        
+    }
+
+    // Remove the specified resource from storage.
     public function destroy(Orderitem $orderitem)
     {
         

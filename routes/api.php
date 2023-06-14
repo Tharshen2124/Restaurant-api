@@ -34,7 +34,7 @@ Route::group(['prefix' => 'v1'], function() {
     Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::apiResource('/menu', MenuController::class);
         /* Route::post('orderitem/{menu}', [OrderitemController::class, 'store']); */
-        Route::apiResource('/addtocart', OrderitemController::class);
+        Route::apiResource('/add-to-cart', OrderitemController::class);
         Route::post('/checkout/{orderitem}', [OrderController::class, 'store']);
     });
 });
