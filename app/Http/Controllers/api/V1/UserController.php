@@ -58,8 +58,8 @@ class UserController extends Controller
     
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $token = $request->user()->createToken('userToken')->plainTextToken;
-            $user = User::where('email', $request->email)->get();
-            dd($user);
+            $user = Auth::user();
+            
             return [
                 'message' => 'Success!',
                 'status' => 200,
