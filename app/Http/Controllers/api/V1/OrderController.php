@@ -17,7 +17,8 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index() {
+    public function index() 
+    {
         
     }
 
@@ -34,7 +35,8 @@ class OrderController extends Controller
                     ->firstorfail();
         $payment = 0;
 
-        foreach ($order->orderitems as $orderitem) {
+        foreach ($order->orderitems as $orderitem) 
+        {
             $payment += ($orderitem->menu->price * $orderitem->quantity);
         }
 
@@ -68,11 +70,6 @@ class OrderController extends Controller
         foreach ($order->orderitems as $orderitem) {
             $payment += ($orderitem->menu->price * $orderitem->quantity);
         }
-
-        /* return view('pages.confirm-order-page', [
-            'orderitems' => $order->orderitems,
-            'payment' => $payment
-        ]); */
     }
 
     /**

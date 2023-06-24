@@ -19,8 +19,7 @@ use App\Models\Orderitem;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) 
-{
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
@@ -31,8 +30,8 @@ Route::group(['prefix' => 'v1'], function()
 {
     Route::post('register', [UserController::class, 'register'])->middleware('guest');
     Route::post('login', [UserController::class, 'login'])->middleware('guest');
-
-    Route::group(['middleware' => ['auth:sanctum']], function() {
+    Route::group(['middleware' => ['auth:sanctum']], function() 
+    {
         Route::apiResource('/menu', MenuController::class);
         Route::apiResource('/add-to-cart', OrderitemController::class);
         Route::apiResource('/checkout', OrderController::class);
