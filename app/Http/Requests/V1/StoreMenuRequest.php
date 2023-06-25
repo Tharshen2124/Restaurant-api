@@ -26,6 +26,7 @@ class StoreMenuRequest extends FormRequest
             'menu_item' => ['required'],
             'type' => ['required', Rule::in(['food', 'drink'])],
             'price' => ['required'],
+            'image' => ['required'],
         ];
     }
 }

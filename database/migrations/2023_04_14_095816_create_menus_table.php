@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('menu_item');
             $table->string('type');
+            $table->string('image');
             $table->float('price');
             $table->timestamps();
         });

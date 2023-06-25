@@ -22,20 +22,12 @@ class UpdateMenuRequest extends FormRequest
      */
     public function rules(): array
     {   
-        $method = $this->method();
-
-        if($method == 'PUT') {
-            return [
-                'menu_item' => ['required'],
-                'type' => ['required', Rule::in(['food', 'drink'])],
-                'price' => ['required'],
-            ];
-        } else {
-            return [
-                'menu_item' => ['sometimes', 'required'],
-                'type' => ['sometimes', 'required', Rule::in(['food', 'drink'])],
-                'price' => ['sometimes', 'required'],
-            ]; 
-        }
+        
+        return [
+            'menu_item' => ['required'],
+            'type' => ['required', Rule::in(['food', 'drink'])],
+            'price' => ['required'],
+            'image' => ['required'],
+        ];
     }   
 }

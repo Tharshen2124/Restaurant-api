@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\V1;
 
 use App\Models\Menu;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\MenuResource;
 use App\Http\Resources\V1\MenuCollection;
@@ -20,7 +21,17 @@ class MenuController extends Controller
     //Store a newly created resource in storage.
     public function store(StoreMenuRequest $request) 
     {
-        return new MenuResource(Menu::create($request->all()));
+        $request->validated($request->all());
+        $image_path = $request->file('image')->store('image', 'public');
+
+        $menu = Menu::create([
+            'menu_item' => $request->menu_item,
+            'type' => $request->type,
+            'image' => $image_path,
+            'price' => $request->price
+        ]);
+
+        return new MenuResource($menu);
     }
 
     //Display the specified resource.
@@ -30,9 +41,19 @@ class MenuController extends Controller
     }
     
     //Update the specified resource in storage.
-    public function update(UpdateMenuRequest $request, Menu $menu) 
+    public function update(Request $request, Menu $menu) 
     {
-        $menu->update($request->all());
+        $request->validate($request->all());
+        $image_path = $request->file('image')->store('image', 'public');
+        
+        $menu->update([
+            'menu_item' => $request->menu_item,
+            'type' => $request->type,
+            'image' => $image_path,
+            'price' => $request->price
+        ]);
+
+        return new MenuResource($menu);
     }
     
     //Remove the specified resource from storage.
