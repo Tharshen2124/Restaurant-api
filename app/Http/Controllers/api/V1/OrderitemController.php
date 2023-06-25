@@ -29,7 +29,7 @@ class OrderitemController extends Controller
     {   
         try 
         {
-            $request->validated($request->all());
+            $request->validated();
         
             $order = Order::firstorcreate(
                 [

@@ -21,7 +21,7 @@ class UserController extends Controller
     // Registers a new user
     public function register(StoreUserRequest $request)
     {
-        $request->validated($request->all());
+        $request->validated();
 
         $user = User::create([
             'name' => $request->name,
@@ -54,7 +54,7 @@ class UserController extends Controller
     // logs the user who has previously registered
     public function login(LoginUserRequest $request)
     {   
-        $request->validated($request->all());
+        $request->validated();
     
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $token = $request->user()->createToken('userToken')->plainTextToken;

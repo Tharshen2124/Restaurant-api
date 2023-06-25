@@ -21,7 +21,7 @@ class MenuController extends Controller
     //Store a newly created resource in storage.
     public function store(StoreMenuRequest $request) 
     {
-        $request->validated($request->all());
+        $request->validated();
         $image_path = $request->file('image')->store('image', 'public');
 
         $menu = Menu::create([
@@ -41,9 +41,9 @@ class MenuController extends Controller
     }
     
     //Update the specified resource in storage.
-    public function update(Request $request, Menu $menu) 
+    public function update(UpdateMenuRequest $request, Menu $menu) 
     {
-        $request->validate($request->all());
+        $data = $request->validated();
         $image_path = $request->file('image')->store('image', 'public');
         
         $menu->update([
