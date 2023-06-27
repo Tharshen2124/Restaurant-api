@@ -35,6 +35,7 @@ Route::group(['prefix' => 'v1'], function()
         Route::apiResource('/menu', MenuController::class);
         Route::apiResource('/add-to-cart', OrderitemController::class);
         Route::apiResource('/checkout', OrderController::class);
+        
     });
 });
 

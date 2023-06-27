@@ -8,9 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use App\Http\Resources\V1\OrderResource;
 use App\Http\Requests\V1\UpdateOrderRequest;
 use App\Http\Requests\V1\StoreOrderRequest as Enter;
-use App\Http\Resources\V1\OrderResource;
 
 class OrderController extends Controller
 {
@@ -27,11 +28,10 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        // get the existing order and make it complete
-        // eager loading https://laravel.com/docs/10.x/eloquent-relationships#eager-loading
+        Cache::forget('numOfItems');
         $order = Order::where('user_id', Auth::id())
                     ->where('status', 'pending')
-                    ->with('orderitems.menu') //eager loading
+                    ->with('orderitems.menu')
                     ->firstorfail();
         $payment = 0;
 

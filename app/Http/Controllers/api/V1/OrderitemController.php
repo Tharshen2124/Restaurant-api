@@ -29,6 +29,9 @@ class OrderitemController extends Controller
     {   
         try 
         {
+            $numOfItems = Cache::get('numOfItems');
+            $numOfItems ?? $numOfItems = 0;
+
             $request->validated();
         
             $order = Order::firstorcreate(
@@ -38,6 +41,9 @@ class OrderitemController extends Controller
                 ],
                 [ "payment" => 0 ]
             );
+
+            $numOfItems += $request->quantity;
+            Cache::put('numOfItems', $numOfItems);
 
             $orderitem = Orderitem::create([
                 'order_id' => $order->id,
@@ -51,9 +57,12 @@ class OrderitemController extends Controller
 
             return [
                 'message' => 'Success!',
-                'orderitem' => new OrderitemResource($orderitem)
+                'orderitem' => new OrderitemResource($orderitem),
+                'num_of_items' => $numOfItems
             ];
-        } catch(\Throwable $th) {
+
+        } catch(\Throwable $th) 
+        {
             dd('Something went wrong!', $th->getMessage());
         }
     }
