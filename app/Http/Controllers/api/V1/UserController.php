@@ -17,7 +17,6 @@ use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
-
     // Registers a new user
     public function register(StoreUserRequest $request)
     {
@@ -32,16 +31,21 @@ class UserController extends Controller
         Auth::login($user);
 
         $token = $request->user()->createToken('userToken')->plainTextToken;
+
         $return = [
             'message' => 'Success!',
-                'status' => 201,
-                'user' => new UserResource($user),
-                'token' => $token
+            'status' => 201,
+            'user' => new UserResource($user),
+            'token' => $token
         ];
 
-        if(Auth::check($user)) {
-            return response($return ,201);
-        } else {
+        if(Auth::check($user)) 
+        {
+            $request->session()->regenerate();
+            return response($return, 201);
+        } 
+        else 
+        {
             return [
                 'message' => 'Error',
                 'status' => 'fuck you',
@@ -52,11 +56,12 @@ class UserController extends Controller
     }
 
     // logs the user who has previously registered
-    public function login(LoginUserRequest $request)
+    public function login(LoginUserRequest $request): array
     {   
         $request->validated();
     
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            //$request->session()->regenerate();
             $token = $request->user()->createToken('userToken')->plainTextToken;
             $user = Auth::user();
             
@@ -83,8 +88,13 @@ class UserController extends Controller
     }
 
     // logs out the user
-    public function logout(string $id)/* : array */ {
-    
+    public function logout(Request $request): array
+    {
+       auth()->logout();
+        
+       if(!Auth::check()) {
+        return ['message' => 'successfully logged out' ];
+       }
     }
 
     // delete the user's records and data

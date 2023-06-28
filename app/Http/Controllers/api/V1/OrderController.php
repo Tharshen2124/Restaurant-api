@@ -15,17 +15,13 @@ use App\Http\Requests\V1\StoreOrderRequest as Enter;
 
 class OrderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Display a listing of the resource.
     public function index() 
     {
         
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Store a newly created resource in storage
     public function store(Request $request)
     {
         Cache::forget('numOfItems');
@@ -55,9 +51,7 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
+    // Display the specified resource.
     public function show(Order $order)
     {
         $payment = 0;
@@ -72,19 +66,15 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    // Update the specified resource in storage.
     public function update(UpdateOrderRequest $request, Order $order)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    // Remove the specified resource from storage.
     public function destroy(Order $order)
     {
-        //
+    
     }
 }

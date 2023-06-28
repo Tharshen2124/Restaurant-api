@@ -30,12 +30,13 @@ Route::group(['prefix' => 'v1'], function()
 {
     Route::post('register', [UserController::class, 'register'])->middleware('guest');
     Route::post('login', [UserController::class, 'login'])->middleware('guest');
+    Route::post('logout', [UserController::class, 'logout']);
     Route::group(['middleware' => ['auth:sanctum']], function() 
     {
-        Route::apiResource('/menu', MenuController::class);
-        Route::apiResource('/add-to-cart', OrderitemController::class);
-        Route::apiResource('/checkout', OrderController::class);
-        
+        Route::post('logout', [UserController::class, 'logout']);
+        Route::apiResource('menu', MenuController::class);
+        Route::apiResource('add-to-cart', OrderitemController::class);
+        Route::apiResource('checkout', OrderController::class);
     });
 });
 
