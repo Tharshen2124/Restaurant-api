@@ -34,7 +34,6 @@ class UserController extends Controller
 
         $return = [
             'message' => 'Success!',
-            'status' => 201,
             'user' => new UserResource($user),
             'token' => $token
         ];
@@ -48,7 +47,6 @@ class UserController extends Controller
         {
             return [
                 'message' => 'Error',
-                'status' => 'fuck you',
                 'user' => null,
                 'token' => null
             ];
@@ -56,28 +54,32 @@ class UserController extends Controller
     }
 
     // logs the user who has previously registered
-    public function login(LoginUserRequest $request): array
+    public function login(LoginUserRequest $request)
     {   
         $request->validated();
     
-        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            //$request->session()->regenerate();
+        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])) 
+        {
             $token = $request->user()->createToken('userToken')->plainTextToken;
             $user = Auth::user();
             
-            return [
+            $return =  [
                 'message' => 'Success!',
-                'status' => 200,
                 'user' => new UserResource($user),
                 'token' => $token,
             ]; 
-        } else {
-            return [
+
+            return response($return, 201);
+        } 
+        else 
+        {
+            $return =  [
                 'message' => 'Error',
-                'status' => 'Fuck you',
                 'user' => null,
                 'token' => null
             ];
+
+            return response($return, 404);
         }
     }
 

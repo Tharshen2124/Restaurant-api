@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Menu extends Model
 {
@@ -11,7 +12,13 @@ class Menu extends Model
 
     protected $guarded = [];
 
-    public function orderitems() {
+    public function orderitems() 
+    {
         return $this->hasMany(Orderitem::class);
+    }
+
+    public function categories() 
+    {
+        return $this->belongsToMany(Category::class);
     }
 }

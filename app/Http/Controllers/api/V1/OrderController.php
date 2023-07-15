@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Http\Resources\V1\OrderResource;
 use App\Http\Requests\V1\UpdateOrderRequest;
 use App\Http\Requests\V1\StoreOrderRequest as Enter;
+use App\Models\Category;
 
 class OrderController extends Controller
 {

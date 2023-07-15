@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\V1;
 
 use App\Models\Menu;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\MenuResource;
@@ -15,15 +16,17 @@ class MenuController extends Controller
     //Display a listing of the resource.
     public function index() 
     {
-        return new MenuCollection(Menu::paginate());
+        return new MenuCollection(Menu::all());
     }
 
-    //Store a newly created resource in storage.
+    // Store a newly created resource in storage.
     public function store(StoreMenuRequest $request) 
     {
         $request->validated();
         $image_path = $request->file('image')->store('image', 'public');
 
+        $reqCategories = explode(",", $request->categories);
+        
         $menu = Menu::create([
             'menu_item' => $request->menu_item,
             'type' => $request->type,
@@ -31,6 +34,20 @@ class MenuController extends Controller
             'price' => $request->price
         ]);
 
+        foreach(Category::all() as $category) 
+        {
+            foreach($reqCategories as $reqCategory)
+            {
+                if($reqCategory === $category->category_name) 
+                {
+                    $category->menus()->attach($menu->id);
+                    break;
+                }
+            }
+        }
+
+        $menu = Menu::where('id', $menu->id)->with('categories')->firstorfail();
+    
         return new MenuResource($menu);
     }
 
