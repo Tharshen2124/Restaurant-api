@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\api\V1\CategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\V1\MenuController;
@@ -31,9 +32,13 @@ Route::group(['prefix' => 'v1'], function()
     Route::post('register', [UserController::class, 'register'])->middleware('guest');
     Route::post('login', [UserController::class, 'login'])->middleware('guest');
     Route::post('logout', [UserController::class, 'logout']);
-    Route::post('logout', [UserController::class, 'logout']);
+    Route::post('logout', [UserController::class, 'logout']);    
     Route::apiResource('menu', MenuController::class)->middleware('guest');
-    
+
+    Route::group(['prefix' => 'admin'], function() {
+        Route::apiResource('categories', CategoryController::class);
+    });
+
     Route::group(['middleware' => ['auth:sanctum']], function() 
     {
         

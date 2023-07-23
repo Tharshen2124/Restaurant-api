@@ -40,7 +40,6 @@ class UserController extends Controller
 
         if(Auth::check($user)) 
         {
-            $request->session()->regenerate();
             return response($return, 201);
         } 
         else 
