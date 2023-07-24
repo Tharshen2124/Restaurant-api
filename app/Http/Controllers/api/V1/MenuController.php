@@ -4,19 +4,21 @@ namespace App\Http\Controllers\api\V1;
 
 use App\Models\Menu;
 use App\Models\Category;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\MenuResource;
 use App\Http\Resources\V1\MenuCollection;
 use App\Http\Requests\V1\StoreMenuRequest;
 use App\Http\Requests\V1\UpdateMenuRequest;
+use App\Traits\HttpResponses;
 
 class MenuController extends Controller
 {
+    use HttpResponses;
     //Display a listing of the resource.
     public function index() 
     {
-        return new MenuCollection(Menu::all());
+       $data = new MenuCollection(Menu::all());
+       return $data ? $this->success($data, 'Here is the data', 200) : $this->error(null, 404);
     }
 
     // Store a newly created resource in storage.
@@ -60,7 +62,7 @@ class MenuController extends Controller
     //Update the specified resource in storage.
     public function update(UpdateMenuRequest $request, Menu $menu) 
     {
-        $data = $request->validated();
+        $request->validated();
         $image_path = $request->file('image')->store('image', 'public');
         
         $menu->update([
