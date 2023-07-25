@@ -18,4 +18,18 @@ class ExampleTest extends TestCase
 
         $response->assertJson([$menu->toArray()]);
     }
+
+    public function test_api_product_store_successful()
+    {
+        $menu = [
+            'menu_item' => 'chocolate',
+            'price' => 12,
+            'type' => 'drink',
+            'image' => 'image/sdfjspjfpsdfjpasdfjpsjadf.jpg',
+        ];
+
+        $response = $this->postJson('/api/v1/menu', $menu);
+        $response->assertStatus(200);
+        $response->assertJson($menu);
+    }
 }

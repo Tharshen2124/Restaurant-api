@@ -20,7 +20,7 @@ class MenuFactory extends Factory
             'menu_item' => $this->faker->name,
             'type' => $this->faker->randomElement(['drink', 'food']),
             'price' => $this->faker-> randomFloat(1, 10, 20),
-            'upload' => $this->faker->image(null, 360, 360, 'animals', true, true, 'cats', true),
+            'image' => $this->faker->image(null, 360, 360, 'animals', true, true, 'cats', true),
         ];
     }
 }
