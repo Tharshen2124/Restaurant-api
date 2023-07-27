@@ -20,7 +20,7 @@ class MenuResource extends JsonResource
             'type' => $this->type,
             'price' => number_format($this->price, 2),
             'image' => $this->image,
-            'categories' => new CategoryCollection($this->categories)
+            /* 'categories' => new CategoryCollection($this->categories) */
         ]);
     }
 }

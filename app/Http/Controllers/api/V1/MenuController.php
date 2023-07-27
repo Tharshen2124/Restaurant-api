@@ -17,8 +17,10 @@ class MenuController extends Controller
     //Display a listing of the resource.
     public function index() 
     {
-       $data = new MenuCollection(Menu::all());
-       return $data ? $this->success($data, 'Here is the data', 200) : $this->error(null, 404);
+       /* $data = new MenuCollection(Menu::all());
+       return $data; */
+       /*return $data ? $this->success($data, 'Here is the data', 200) : $this->error(null, 404); */
+        return Menu::all();
     }
 
     // Store a newly created resource in storage.
@@ -26,7 +28,7 @@ class MenuController extends Controller
     {
         $request->validated();
         $image_path = $request->file('image')->store('image', 'public');
-
+        
         $reqCategories = explode(",", $request->categories);
         
         $menu = Menu::create([
@@ -42,7 +44,8 @@ class MenuController extends Controller
             {
                 if($reqCategory === $category->category_name) 
                 {
-                    $category->menus()->attach($menu->id);
+                    // Attach the menu to the category
+
                     break;
                 }
             }
@@ -50,7 +53,9 @@ class MenuController extends Controller
 
         $menu = Menu::where('id', $menu->id)->with('categories')->firstorfail();
     
-        return new MenuResource($menu);
+        return response()->json([
+            "data" => new MenuResource($menu)
+        ],201);
     }
 
     //Display the specified resource.
