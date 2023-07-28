@@ -17,10 +17,10 @@ class MenuController extends Controller
     //Display a listing of the resource.
     public function index() 
     {
-       /* $data = new MenuCollection(Menu::all());
-       return $data; */
-       /*return $data ? $this->success($data, 'Here is the data', 200) : $this->error(null, 404); */
-        return Menu::all();
+       return response()->json([
+        'message' => 'success',
+        'data' => MenuResource::collection(Menu::all())
+       ], 200);
     }
 
     // Store a newly created resource in storage.

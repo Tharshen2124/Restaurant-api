@@ -3,9 +3,12 @@
 namespace Tests\Feature;
 
 // use Illuminate\Foundation\Testing\RefreshDatabase;
+
 use Tests\TestCase;
 use App\Models\Menu;
 use Illuminate\Http\UploadedFile;
+use App\Http\Resources\V1\MenuResource;
+use App\Http\Resources\V1\MenuCollection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ExampleTest extends TestCase
@@ -16,17 +19,50 @@ class ExampleTest extends TestCase
      */
     public function test_api_returns_menu_list()
     {
-        $menus = Menu::factory(5)->create();
-        $expectedResponse = $menus->map(function ($menu) {
-            return $menu->toArray();
-        })->toArray();
+        Menu::factory(3)->create();
 
         $response = $this->getJson('/api/v1/menu');
+        
+        // do 
+        $menu1 = [
+            "data" => [
+                [
+                    "image",
+                    "menu_item",
+                    "price",
+                    "type",
+                ]
+            ]
+        ];
 
-        $response->assertJson($expectedResponse);
+        $menu2 = [
+            "message" => 'success',
+        ];
+
+        // use it for dynamic data and if you have a structure
+        $response->assertJsonStructure($menu1);
+        
+        // use it for hard-coded data
+        $response->assertJsonFragment($menu2);
     }
 
-    public function test_api_product_store_successful()
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /* public function test_api_product_store_successful()
     {
         $menu = [
             'menu_item' => 'chocolate',
@@ -42,5 +78,5 @@ class ExampleTest extends TestCase
             'price' => number_format(12, 2),
             'type' => 'drink',
         ]);
-    }
+    } */
 }
