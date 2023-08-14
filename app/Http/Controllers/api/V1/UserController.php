@@ -33,22 +33,21 @@ class UserController extends Controller
         $token = $request->user()->createToken('userToken')->plainTextToken;
 
         $return = [
-            'message' => 'Success!',
-            'user' => new UserResource($user),
-            'token' => $token
+            
         ];
 
         if(Auth::check($user)) 
         {
-            return response($return, 201);
-        } 
-        else 
-        {
-            return [
-                'message' => 'Error',
-                'user' => null,
-                'token' => null
-            ];
+            return response()->json([
+                'message' => 'Success!',
+                'user' => new UserResource($user),
+                'token' => $token
+            ], 201);
+            
+        } else {
+            return response()->json([
+                "message" => "an error has occured"
+            ], 403);
         }
     }
 
@@ -70,6 +69,7 @@ class UserController extends Controller
 
             return response($return, 201);
         } 
+        
         else 
         {
             $return =  [

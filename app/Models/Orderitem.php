@@ -6,7 +6,6 @@ use App\Models\Menu;
 use App\Models\Order;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
 class Orderitem extends Model
 {
     use HasFactory;

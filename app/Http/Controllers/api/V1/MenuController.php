@@ -6,7 +6,6 @@ use App\Models\Menu;
 use App\Models\Category;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\MenuResource;
-use App\Http\Resources\V1\MenuCollection;
 use App\Http\Requests\V1\StoreMenuRequest;
 use App\Http\Requests\V1\UpdateMenuRequest;
 use App\Traits\HttpResponses;
@@ -45,7 +44,7 @@ class MenuController extends Controller
                 if($reqCategory === $category->category_name) 
                 {
                     // Attach the menu to the category
-
+                     $category->menus()->attach($menu->id);
                     break;
                 }
             }
