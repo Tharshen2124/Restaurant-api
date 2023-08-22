@@ -20,10 +20,9 @@ class ExampleTest extends TestCase
     public function test_api_returns_menu_list()
     {
         Menu::factory(3)->create();
-
+        
         $response = $this->getJson('/api/v1/menu');
         
-        // do 
         $menu1 = [
             "data" => [
                 [

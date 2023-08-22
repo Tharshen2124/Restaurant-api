@@ -85,17 +85,19 @@ class UserController extends Controller
     // Update the specified resource in storage.
     public function update(Request $request, string $id)
     {
-    
+        
     }
 
     // logs out the user
-    public function logout(Request $request): array
+    public function logout(Request $request)
     {
-       auth()->logout();
+        $request->user()->currentAccessToken()->delete();
+        /* Auth::logout(); */
         
-       if(!Auth::check()) {
-        return ['message' => 'successfully logged out' ];
-       }
+        return response()->json([
+            'message' => 'User successfully logged out'
+        ], 200);
+
     }
 
     // delete the user's records and data
