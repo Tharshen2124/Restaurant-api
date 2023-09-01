@@ -3,22 +3,41 @@
 namespace App\Http\Controllers\api\V1;
 
 use App\Models\Menu;
+use App\Models\User;
+use App\Models\Order;
 use App\Models\Category;
+use App\Models\Orderitem;
+use Illuminate\Http\Request;
+use App\Traits\HttpResponses;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\V1\MenuResource;
+use App\Http\Resources\V1\OrderResource;
 use App\Http\Requests\V1\StoreMenuRequest;
 use App\Http\Requests\V1\UpdateMenuRequest;
-use App\Traits\HttpResponses;
 
 class MenuController extends Controller
 {
     use HttpResponses;
+ /*  $orderitems = $order->orderitems ?? null; */
     //Display a listing of the resource.
-    public function index() 
+    public function index(Request $request) 
     {
+        if(Auth::check()) {
+            $order = Order::where('user_id', Auth::id())
+                    ->where('status', 'pending')
+                    ->with('orderitems.menu')
+                    ->firstorfail(); 
+            $orderitems = $order->orderitems ?? null;
+        } else {
+            $orderitems = [];
+        }
+
        return response()->json([
         'message' => 'success',
-        'data' => MenuResource::collection(Menu::all())
+        'data' => MenuResource::collection(Menu::all()),
+        'orderitems' => $orderitems,
        ], 200);
     }
 
@@ -59,8 +78,10 @@ class MenuController extends Controller
 
     //Display the specified resource.
     public function show(Menu $menu)
-    {
-        return new MenuResource($menu);
+    {   
+        return response()->json([
+            'data' => new MenuResource($menu),
+        ], 200); 
     }
     
     //Update the specified resource in storage.

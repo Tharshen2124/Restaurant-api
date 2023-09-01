@@ -10,10 +10,6 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\V1\UserResource;
 use App\Http\Requests\V1\LoginUserRequest;
 use App\Http\Requests\V1\StoreUserRequest;
-use Illuminate\Validation\ValidationException;
-
-/* use App\Traits\HttpResponses; */
-
 
 class UserController extends Controller
 {
@@ -31,10 +27,6 @@ class UserController extends Controller
         Auth::login($user);
 
         $token = $request->user()->createToken('userToken')->plainTextToken;
-
-        $return = [
-            
-        ];
 
         if(Auth::check($user)) 
         {
@@ -60,14 +52,12 @@ class UserController extends Controller
         {
             $token = $request->user()->createToken('userToken')->plainTextToken;
             $user = Auth::user();
-            
-            $return =  [
+
+            return response()->json([
                 'message' => 'Success!',
                 'user' => new UserResource($user),
                 'token' => $token,
-            ]; 
-
-            return response($return, 201);
+            ], 200);
         } 
         
         else 
@@ -91,17 +81,24 @@ class UserController extends Controller
     // logs out the user
     public function logout(Request $request)
     {
+        Auth::logout();
         $request->user()->currentAccessToken()->delete();
-        /* Auth::logout(); */
         
-        return response()->json([
-            'message' => 'User successfully logged out'
-        ], 200);
-
+        if(Auth::check()) {
+            return response()->json([
+                'message' => 'User successfully logged out'
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'User sufdofsdfosdofnsfccessfully logged out'
+            ], 200);
+    
+        }
+        
     }
 
     // delete the user's records and data
     public function deleteUser(User $user)/* : array */ {
-
+        
     }
 }

@@ -58,7 +58,7 @@ class OrderitemController extends Controller
             return [
                 'message' => 'Success!',
                 'orderitem' => new OrderitemResource($orderitem),
-                'num_of_items' => $numOfItems
+                'num_of_items' => $numOfItems,
             ];
 
         } catch(\Throwable $th) 

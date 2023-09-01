@@ -34,19 +34,18 @@ Route::group(['prefix' => 'v1'], function()
 {
     Route::post('register', [UserController::class, 'register']);
     Route::post('login', [UserController::class, 'login']);
-    
-    Route::apiResource('menu', MenuController::class);
         
-    Route::group(['prefix' => 'admin'], function() {
+    Route::group(['prefix' => 'admin'], function() 
+    {
         Route::apiResource('categories', CategoryController::class);
     });
 
     Route::group(['middleware' => ['auth:sanctum']], function() 
     {   
         Route::post('/logout', [UserController::class, 'logout']);
-        /* Route::apiResource('menu', MenuController::class); */
         Route::apiResource('add-to-cart', OrderitemController::class);
         Route::apiResource('checkout', OrderController::class);
+        Route::apiResource('menu', MenuController::class);
     });
 });
 

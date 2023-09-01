@@ -16,6 +16,7 @@ class MenuResource extends JsonResource
     public function toArray(Request $request): array
     {
         return ([
+            'id' => $this->id, 
             'menu_item' => $this->menu_item,
             'type' => $this->type,
             'price' => number_format($this->price, 2),
