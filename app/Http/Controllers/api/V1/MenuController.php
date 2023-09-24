@@ -24,21 +24,28 @@ class MenuController extends Controller
     //Display a listing of the resource.
     public function index(Request $request) 
     {
-        if(Auth::check()) {
+        [$bearer, $token] = explode(' ', $request->header('Authorization'));
+        
+        if(Auth::check() && $token) {
             $order = Order::where('user_id', Auth::id())
                     ->where('status', 'pending')
                     ->with('orderitems.menu')
                     ->firstorfail(); 
-            $orderitems = $order->orderitems ?? null;
+            $orderitems = $order->orderitems ?? "hello world";
         } else {
-            $orderitems = [];
+            $orderitems = "this is a joke";
         }
 
        return response()->json([
         'message' => 'success',
-        'data' => MenuResource::collection(Menu::all()),
+        'data' => MenuResource::collection(Menu::all()),x
         'orderitems' => $orderitems,
        ], 200);
+    }
+
+    public function orderitems() 
+    {
+        dd('hello');
     }
 
     // Store a newly created resource in storage.
