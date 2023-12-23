@@ -19,7 +19,7 @@ The point of this project is to learn more on how to make an api and what are th
 
 
 ## Frontend
- Currently, im making the frontend using Vue and you can check it out over on this link
+ Currently, im making the frontend using Next.js and you can check it out over on this link
 <a href="https://github.com/Tharshen2124/Restaurant-frontend">Restaurant Frontend</a>
 
 ## Appendix
